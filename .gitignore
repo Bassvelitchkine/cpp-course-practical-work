@@ -1,0 +1,32 @@
+# GIT exclusions
+
+# all platforms
+.vscode
+.idea
+.metadata
+
+# macOS specific
+.DS_Store
+._*
+*.xcodeproj
+
+# Windows specific
+*.lnk
+
+# objects and executables
+*.o
+a.out
+*.OBJ
+*.EXE
+
+# 3MD1080 specific
+TestNumber
+TestExpression
+compute_pi_montecarlo
+compute_pi_area
+
+# Commonly found in student projects
+main
+test
+tests
+
