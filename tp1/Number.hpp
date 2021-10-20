@@ -26,7 +26,8 @@ public:
     };
 
     void print(std::ostream &out) const
-    { /* TODO */
+    {
+        this->first_->print(out);
     }
 
 private:
@@ -49,6 +50,12 @@ private:
                 delete next_;
             }
             std::cout << "Digit::~Digit : " << digit_ << "\n";
+        }
+        // A printer for the structure
+        void print(std::ostream &out) const
+        {
+            if (next_)
+                this->next_->print(out);
         }
         // Below are the Digit structure attributes
         DigitType digit_;

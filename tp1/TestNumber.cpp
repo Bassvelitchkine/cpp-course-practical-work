@@ -12,9 +12,17 @@
 
 #include "Number.hpp"
 
-void test22()
+void test21()
 {
     Number *myNumber = new Number(123);
+    delete myNumber;
+}
+
+void test22()
+{
+    Number *myNumber = new Number(243);
+    std::cout << *myNumber << "\n";
+    operator<<(std::cout, *myNumber);
     delete myNumber;
 }
 
