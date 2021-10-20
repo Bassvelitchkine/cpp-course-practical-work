@@ -48,7 +48,13 @@ void test31()
     std::cout << "\n";
 }
 
+void test32()
+{
+    unsigned int n{9};
+    factorielle(n).print(std::cout);
+}
+
 int main()
 {
-    test31();
+    test32();
 }

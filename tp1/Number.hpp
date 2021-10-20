@@ -118,4 +118,22 @@ inline std::ostream &operator<<(std::ostream &out, const Number &n)
     return out;
 }
 
+Number factorielle(unsigned int n)
+{
+    Number myNumber{n};
+    if (n == 1 || n == 0 || n == 2)
+    {
+        return myNumber;
+    }
+    else
+    {
+        while (n >= 3)
+        {
+            n -= 1;
+            myNumber.multiply(n);
+        }
+        return myNumber;
+    }
+}
+
 #endif
