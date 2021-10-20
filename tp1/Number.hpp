@@ -21,8 +21,9 @@ public:
     }
 
     ~Number()
-    { /* TODO */
-    }
+    {
+        delete first_;
+    };
 
     void print(std::ostream &out) const
     { /* TODO */
@@ -39,6 +40,15 @@ private:
             : digit_{static_cast<unsigned int>(l % number_base)}, next_{l < number_base ? nullptr : new Digit{l / number_base}}
         {
             std::cout << "Digit::Digit : " << l << "\n";
+        }
+        // Then a destructor for the structure
+        ~Digit()
+        {
+            if (next_)
+            {
+                delete next_;
+            }
+            std::cout << "Digit::~Digit : " << digit_ << "\n";
         }
         // Below are the Digit structure attributes
         DigitType digit_;

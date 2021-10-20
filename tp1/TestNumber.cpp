@@ -14,7 +14,8 @@
 
 void test22()
 {
-    Number myNumber(123);
+    Number *myNumber = new Number(123);
+    delete myNumber;
 }
 
 int main()
