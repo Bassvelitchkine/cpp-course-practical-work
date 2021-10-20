@@ -12,10 +12,9 @@
 
 #include "Number.hpp"
 
- 
 void test22()
 {
-    
+    Number myNumber(123);
 }
 
 int main()
