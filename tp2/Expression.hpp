@@ -29,4 +29,13 @@ private:
     double val_;
 };
 
+class Variable : public Expression
+{
+public:
+    Variable(std::string nom) : nom_{nom} {};
+
+private:
+    std::string nom_;
+}
+
 #endif
