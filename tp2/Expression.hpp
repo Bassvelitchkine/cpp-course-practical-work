@@ -13,10 +13,20 @@
 #include <utility>
 #include <memory>
 
-class Expression {
+class Expression
+{
 public:
     // TODO
 private:
+};
+
+class Nombre : public Expression
+{
+public:
+    Nombre(double val) : val_{val} {}
+
+private:
+    double val_;
 };
 
 #endif
