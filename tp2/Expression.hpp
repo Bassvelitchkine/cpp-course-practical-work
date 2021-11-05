@@ -16,8 +16,15 @@
 class Expression
 {
 public:
-    // TODO
+    virtual ~Expression() {}
+
 private:
+};
+
+inline std::ostream &operator<<(std::ostream &out, const Expression &e)
+{
+    out << "Hello world\n";
+    return out;
 };
 
 class Nombre : public Expression
