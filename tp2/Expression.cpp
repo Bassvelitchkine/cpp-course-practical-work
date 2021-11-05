@@ -12,6 +12,4 @@
 
 #include "Expression.hpp"
 
-
-
-
+int Expression::nb_instances_{0};
