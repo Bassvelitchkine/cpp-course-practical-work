@@ -13,6 +13,7 @@
 #include <utility>
 #include <memory>
 
+// THE MOTHER CLASS: EXPRESSION
 class Expression
 {
 public:
@@ -21,6 +22,7 @@ public:
 
     virtual void affiche(std::ostream &out) const = 0;
     virtual Expression *derive(std::string derivation_variable) const = 0;
+    virtual Expression *clone() const = 0;
 
     static int nb_instances()
     {
@@ -37,6 +39,7 @@ inline std::ostream &operator<<(std::ostream &out, const Expression &e)
     return out;
 };
 
+// A CHILD CLASS OF EXPRESSION: NOMBRE
 class Nombre : public Expression
 {
 public:
@@ -45,7 +48,12 @@ public:
     void affiche(std::ostream &out) const
     {
         out << val_;
-    }
+    };
+
+    Nombre *clone() const
+    {
+        return new Nombre{val_};
+    };
 
     Nombre *derive(std::string derivation_variable) const
     {
@@ -56,6 +64,7 @@ private:
     double val_;
 };
 
+// A CHILD CLASS OF EXPRESSION: VARIABLE
 class Variable : public Expression
 {
 public:
@@ -64,6 +73,11 @@ public:
     void affiche(std::ostream &out) const
     {
         out << nom_;
+    };
+
+    Variable *clone() const
+    {
+        return new Variable{nom_};
     };
 
     Nombre *derive(std::string derivation_variable) const
@@ -81,6 +95,7 @@ public:
     virtual ~Operation(){};
     virtual Operation *derive(std::string derivation_variable) const = 0;
     virtual void affiche(std::ostream &out) const = 0;
+    virtual Operation *clone() const = 0;
 
 private:
 };
@@ -97,13 +112,18 @@ public:
         droite_->affiche(out);
     };
 
+    Addition *clone() const
+    {
+        return new Addition{gauche_, droite_};
+    };
+
     Addition *derive(std::string derivation_variable) const
     {
         Expression *new_gauche = gauche_->derive(derivation_variable);
         Expression *new_droite = droite_->derive(derivation_variable);
 
         return new Addition{new_gauche, new_droite};
-    }
+    };
 
 private:
     Expression *gauche_;
@@ -122,10 +142,15 @@ public:
         droite_->affiche(out);
     };
 
+    Multiplication *clone() const
+    {
+        return new Multiplication{gauche_, droite_};
+    }
+
     Addition *derive(std::string derivation_variable) const
     {
-        Expression *new_gauche = new Multiplication{gauche_->derive(derivation_variable), droite_};
-        Expression *new_droite = new Multiplication{gauche_, droite_->derive(derivation_variable)};
+        Expression *new_gauche = new Multiplication{gauche_->derive(derivation_variable), droite_->clone()};
+        Expression *new_droite = new Multiplication{gauche_->clone(), droite_->derive(derivation_variable)};
 
         return new Addition{new_gauche, new_droite};
     }
