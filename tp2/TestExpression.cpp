@@ -51,14 +51,22 @@ void test_addition()
 void test_multiplication()
 {
 
-    Expression *multiplication = new Multiplication(new Nombre(2), new Variable("x"));
+    Expression *addition = new Addition(new Nombre(2), new Variable("x"));
+    std::cout << "Addition : " << *addition << "\n";
+
+    Expression *multiplication = new Multiplication(new Nombre(4), new Variable("x"));
     std::cout << "Multiplication : " << *multiplication << "\n";
 
-    Expression *derived_multiplication = multiplication->derive("x");
-    std::cout << "Derivee : " << *derived_multiplication << "\n";
+    Expression *final_expression = new Multiplication{addition, multiplication};
+    std::cout << "Final expression : " << *final_expression << "\n";
+
+    Expression *derived_expression = final_expression->derive("x");
+    std::cout << "Derivee : " << *derived_expression << "\n";
 
     delete multiplication;
-    delete derived_multiplication;
+    delete addition;
+    delete final_expression;
+    delete derived_expression;
 }
 
 int main(int argc, char *argv[])

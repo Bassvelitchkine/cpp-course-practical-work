@@ -107,9 +107,11 @@ public:
 
     void affiche(std::ostream &out) const
     {
+        out << "(";
         gauche_->affiche(out);
         out << " + ";
         droite_->affiche(out);
+        out << ")";
     };
 
     Addition *clone() const
@@ -137,9 +139,11 @@ public:
 
     void affiche(std::ostream &out) const
     {
+        out << "(";
         gauche_->affiche(out);
         out << " * ";
         droite_->affiche(out);
+        out << ")";
     };
 
     Multiplication *clone() const
