@@ -16,14 +16,15 @@
 class Expression
 {
 public:
-    virtual ~Expression() {}
+    virtual ~Expression(){};
+    virtual void affiche(std::ostream &out) const = 0;
 
 private:
 };
 
 inline std::ostream &operator<<(std::ostream &out, const Expression &e)
 {
-    out << "Hello world\n";
+    e.affiche(out);
     return out;
 };
 
@@ -31,6 +32,11 @@ class Nombre : public Expression
 {
 public:
     Nombre(double val) : val_{val} {}
+
+    void affiche(std::ostream &out) const
+    {
+        out << val_ << "\n";
+    }
 
 private:
     double val_;
@@ -41,8 +47,13 @@ class Variable : public Expression
 public:
     Variable(std::string nom) : nom_{nom} {};
 
+    void affiche(std::ostream &out) const
+    {
+        out << nom_ << "\n";
+    };
+
 private:
     std::string nom_;
-}
+};
 
 #endif
