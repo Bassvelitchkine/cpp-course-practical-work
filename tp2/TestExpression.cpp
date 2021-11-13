@@ -3,7 +3,7 @@
  * 3MD1080 - C++ - TP n°2
  *
  * TestExpression.cpp
- * c++ -std=c++20 -o TestExpression Expression.cpp TestExpression.cpp
+ * c++ -std=c++2a -o TestExpression Expression.cpp TestExpression.cpp
  */
 
 #include <iostream>
@@ -11,67 +11,71 @@
 
 #include "Expression.hpp"
 
-void test12()
+void test_derivation()
 {
-    // Expression *e = new Multiplication(
-    //     new Variable("x"),
-    //     new Nombre(2));
+    using ExpressionPtr = std::shared_ptr<const Expression>;
+    using VariablePtr = std::shared_ptr<const Variable>;
+    using NombrePtr = std::shared_ptr<const Nombre>;
 
-    Expression *nombre = new Nombre(2);
+    NombrePtr nombre{new Nombre(2)};
     std::cout << "Expression : " << *nombre << "\n";
-    Expression *derived_nombre = nombre->derive("x");
+    ExpressionPtr derived_nombre{nombre->derive("x")};
     std::cout << "Derivee : " << *derived_nombre << "\n";
 
     std::cout << "Nombre d'instances : " << Expression::nb_instances() << "\n"; // Should be 2;
 
-    delete derived_nombre;
-    delete nombre;
-
-    Expression *variable = new Variable("x");
+    VariablePtr variable{new Variable("x")};
     std::cout << "Expression : " << *variable << "\n";
-    Expression *derived_variable = variable->derive("x");
+    ExpressionPtr derived_variable{variable->derive("x")};
     std::cout << "Derivee : " << *derived_variable << "\n";
-    delete variable;
-    delete derived_variable;
 }
 
 void test_addition()
 {
+    using ExpressionPtr = std::shared_ptr<const Expression>;
+    using VariablePtr = std::shared_ptr<const Variable>;
+    using NombrePtr = std::shared_ptr<const Nombre>;
+    using AdditionPtr = std::shared_ptr<const Addition>;
+    using MultiplicationPtr = std::shared_ptr<const Multiplication>;
 
-    Expression *addition = new Addition(new Nombre(2), new Variable("x"));
+    NombrePtr two{new Nombre(2)};
+    VariablePtr x{new Variable("x")};
+
+    AdditionPtr addition{new Addition{two, x}};
     std::cout << "Addition : " << *addition << "\n";
 
-    Expression *derived_addition = addition->derive("x");
+    ExpressionPtr derived_addition{addition->derive("x")};
     std::cout << "Derivee : " << *derived_addition << "\n";
-
-    delete addition;
-    delete derived_addition;
 }
 
 void test_multiplication()
 {
+    using ExpressionPtr = std::shared_ptr<const Expression>;
+    using VariablePtr = std::shared_ptr<const Variable>;
+    using NombrePtr = std::shared_ptr<const Nombre>;
+    using AdditionPtr = std::shared_ptr<const Addition>;
+    using MultiplicationPtr = std::shared_ptr<const Multiplication>;
 
-    Expression *addition = new Addition(new Nombre(2), new Variable("x"));
+    NombrePtr two{new Nombre{2}};
+    NombrePtr four{new Nombre{4}};
+    VariablePtr x{new Variable("x")};
+
+    AdditionPtr addition{new Addition{two, x}};
     std::cout << "Addition : " << *addition << "\n";
 
-    Expression *multiplication = new Multiplication(new Nombre(4), new Variable("x"));
+    MultiplicationPtr multiplication{new Multiplication{four, x->clone()}};
     std::cout << "Multiplication : " << *multiplication << "\n";
 
-    Expression *final_expression = new Multiplication{addition, multiplication};
+    MultiplicationPtr final_expression{new Multiplication{addition, multiplication}};
     std::cout << "Final expression : " << *final_expression << "\n";
 
-    Expression *derived_expression = final_expression->derive("x");
+    ExpressionPtr derived_expression{final_expression->derive("x")};
     std::cout << "Derivee : " << *derived_expression << "\n";
-
-    delete multiplication;
-    delete addition;
-    delete final_expression;
-    delete derived_expression;
 }
 
 int main(int argc, char *argv[])
 {
-    // test12();
+    // test_derivation();
     // test_addition();
     test_multiplication();
 };

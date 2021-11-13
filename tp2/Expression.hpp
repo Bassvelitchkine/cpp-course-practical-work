@@ -20,9 +20,11 @@ public:
     Expression() { ++nb_instances_; };
     virtual ~Expression() { --nb_instances_; };
 
+    using ExpressionPtr = std::shared_ptr<const Expression>;
+
     virtual void affiche(std::ostream &out) const = 0;
-    virtual Expression *derive(std::string derivation_variable) const = 0;
-    virtual Expression *clone() const = 0;
+    virtual ExpressionPtr derive(std::string derivation_variable) const = 0;
+    virtual ExpressionPtr clone() const = 0;
 
     static int nb_instances()
     {
@@ -44,20 +46,21 @@ class Nombre : public Expression
 {
 public:
     Nombre(double val) : val_{val} {};
+    using NombrePtr = std::shared_ptr<const Nombre>;
 
     void affiche(std::ostream &out) const
     {
         out << val_;
     };
 
-    Nombre *clone() const
+    ExpressionPtr clone() const
     {
-        return new Nombre{val_};
+        return NombrePtr{new Nombre{val_}};
     };
 
-    Nombre *derive(std::string derivation_variable) const
+    ExpressionPtr derive(std::string derivation_variable) const
     {
-        return new Nombre{0};
+        return NombrePtr{new Nombre{0}};
     };
 
 private:
@@ -69,20 +72,22 @@ class Variable : public Expression
 {
 public:
     Variable(std::string nom) : nom_{nom} {};
+    using NombrePtr = std::shared_ptr<const Nombre>;
+    using VariablePtr = std::shared_ptr<const Variable>;
 
     void affiche(std::ostream &out) const
     {
         out << nom_;
     };
 
-    Variable *clone() const
+    ExpressionPtr clone() const
     {
-        return new Variable{nom_};
+        return VariablePtr{new Variable{nom_}};
     };
 
-    Nombre *derive(std::string derivation_variable) const
+    ExpressionPtr derive(std::string derivation_variable) const
     {
-        return new Nombre{nom_ == derivation_variable ? 1. : 0.};
+        return NombrePtr{new Nombre{nom_ == derivation_variable ? 1. : 0.}};
     };
 
 private:
@@ -93,9 +98,12 @@ class Operation : public Expression
 {
 public:
     virtual ~Operation(){};
-    virtual Operation *derive(std::string derivation_variable) const = 0;
+    using OperationPtr = std::shared_ptr<const Operation>;
+
+    virtual ExpressionPtr derive(std::string derivation_variable) const = 0;
+    virtual ExpressionPtr clone() const = 0;
+
     virtual void affiche(std::ostream &out) const = 0;
-    virtual Operation *clone() const = 0;
 
 private:
 };
@@ -103,7 +111,8 @@ private:
 class Addition : public Operation
 {
 public:
-    Addition(Expression *gauche, Expression *droite) : gauche_{gauche}, droite_{droite} {};
+    Addition(ExpressionPtr gauche, ExpressionPtr droite) : gauche_{gauche}, droite_{droite} {};
+    using AdditionPtr = std::shared_ptr<const Addition>;
 
     void affiche(std::ostream &out) const
     {
@@ -114,28 +123,30 @@ public:
         out << ")";
     };
 
-    Addition *clone() const
+    ExpressionPtr clone() const
     {
-        return new Addition{gauche_, droite_};
+        return AdditionPtr{new Addition{gauche_, droite_}};
     };
 
-    Addition *derive(std::string derivation_variable) const
+    ExpressionPtr derive(std::string derivation_variable) const
     {
-        Expression *new_gauche = gauche_->derive(derivation_variable);
-        Expression *new_droite = droite_->derive(derivation_variable);
+        ExpressionPtr new_gauche = gauche_->derive(derivation_variable);
+        ExpressionPtr new_droite = droite_->derive(derivation_variable);
 
-        return new Addition{new_gauche, new_droite};
+        return AdditionPtr{new Addition{new_gauche, new_droite}};
     };
 
 private:
-    Expression *gauche_;
-    Expression *droite_;
+    ExpressionPtr gauche_;
+    ExpressionPtr droite_;
 };
 
 class Multiplication : public Operation
 {
 public:
-    Multiplication(Expression *gauche, Expression *droite) : gauche_{gauche}, droite_{droite} {};
+    Multiplication(ExpressionPtr gauche, ExpressionPtr droite) : gauche_{gauche}, droite_{droite} {};
+    using MultiplicationPtr = std::shared_ptr<const Multiplication>;
+    using AdditionPtr = std::shared_ptr<const Addition>;
 
     void affiche(std::ostream &out) const
     {
@@ -146,22 +157,22 @@ public:
         out << ")";
     };
 
-    Multiplication *clone() const
+    ExpressionPtr clone() const
     {
-        return new Multiplication{gauche_, droite_};
+        return MultiplicationPtr{new Multiplication{gauche_, droite_}};
     }
 
-    Addition *derive(std::string derivation_variable) const
+    ExpressionPtr derive(std::string derivation_variable) const
     {
-        Expression *new_gauche = new Multiplication{gauche_->derive(derivation_variable), droite_->clone()};
-        Expression *new_droite = new Multiplication{gauche_->clone(), droite_->derive(derivation_variable)};
+        ExpressionPtr new_gauche{new Multiplication{gauche_->derive(derivation_variable), droite_->clone()}};
+        ExpressionPtr new_droite{new Multiplication{gauche_->clone(), droite_->derive(derivation_variable)}};
 
-        return new Addition{new_gauche, new_droite};
+        return AdditionPtr{new Addition{new_gauche, new_droite}};
     }
 
 private:
-    Expression *gauche_;
-    Expression *droite_;
+    ExpressionPtr gauche_;
+    ExpressionPtr droite_;
 };
 
 #endif
