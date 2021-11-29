@@ -53,14 +53,26 @@ FloatKind compute_pi(unsigned long nb_points)
     return 4 * inside_circle / total;
 }
 
+//test11
 void test_pi_computation(unsigned long nb_points)
 {
     FloatKind error{std::abs(pi - compute_pi(nb_points))};
     std::cout << "Error is: " << error << "\n\n";
 }
 
+//test12
+void test_execution_time(unsigned long nb_points)
+{
+    auto start = std::chrono::high_resolution_clock::now();
+    FloatKind error{std::abs(pi - compute_pi(nb_points))};
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Error is: " << error << "\n\n";
+    std::cout << "Execution time is: " << duration.count() << " microseconds\n\n";
+}
+
 int main(int argc, char *argv[])
 {
     unsigned long nb_points = std::stoull(argv[1]);
-    test_pi_computation(nb_points);
+    test_execution_time(nb_points);
 };
