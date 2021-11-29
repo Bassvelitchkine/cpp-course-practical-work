@@ -61,18 +61,39 @@ void test_pi_computation(unsigned long nb_points)
 }
 
 //test12
+// With nb_points = 70000000 and -o, execution time is ~22s.
+// With nb_points = 70000000 and -O, execution time is ~12s.
+// With nb_points = 70000000 and -O2, execution time is ~10s.
+// With nb_points = 70000000 and -O3, execution time is ~10s.
 void test_execution_time(unsigned long nb_points)
 {
     auto start = std::chrono::high_resolution_clock::now();
     FloatKind error{std::abs(pi - compute_pi(nb_points))};
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
     std::cout << "Error is: " << error << "\n\n";
-    std::cout << "Execution time is: " << duration.count() << " microseconds\n\n";
+    std::cout << "Execution time is: " << duration.count() << "s\n\n";
+}
+
+//test14
+// Max variability is ~10^-2
+void test_variability(unsigned long nb_points)
+{
+    FloatKind greatest_difference{0};
+    FloatKind res{};
+    for (int i = 0; i < 10; i++)
+    {
+        res = std::abs(pi - compute_pi(nb_points));
+        if (res > greatest_difference)
+        {
+            greatest_difference = res;
+        }
+    }
+    std::cout << "Greatest estimation error is: " << greatest_difference << "\n\n";
 }
 
 int main(int argc, char *argv[])
 {
     unsigned long nb_points = std::stoull(argv[1]);
-    test_execution_time(nb_points);
+    test_variability(nb_points);
 };
