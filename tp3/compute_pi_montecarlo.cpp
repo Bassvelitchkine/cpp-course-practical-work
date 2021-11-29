@@ -19,7 +19,7 @@
 #include <cmath>
 #include <cstdlib>
 
-using FloatKind = float;
+using FloatKind = long double;
 const FloatKind pi{3.14159265358979323846};
 
 FloatKind next_random()
@@ -61,22 +61,38 @@ void test_pi_computation(unsigned long nb_points)
 }
 
 //test12
+
+// FLOAT:
 // With nb_points = 70000000 and -o, execution time is ~22s.
 // With nb_points = 70000000 and -O, execution time is ~12s.
 // With nb_points = 70000000 and -O2, execution time is ~10s.
 // With nb_points = 70000000 and -O3, execution time is ~10s.
+
+// DOUBLE:
+// With nb_points = 70000000 and -o, execution time is ~25s.
+
+// LONG DOUBLE:
+// With nb_points = 70000000 and -o, execution time is ~33s.
 void test_execution_time(unsigned long nb_points)
 {
     auto start = std::chrono::high_resolution_clock::now();
     FloatKind error{std::abs(pi - compute_pi(nb_points))};
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     std::cout << "Error is: " << error << "\n\n";
-    std::cout << "Execution time is: " << duration.count() << "s\n\n";
+    std::cout << "Execution time is: " << duration.count() << "ms\n\n";
 }
 
 //test14
+
+// FLOAT:
 // Max variability is ~10^-2
+
+// DOUBLE:
+// Max variability is ~10^-2
+
+// LONG DOUBLE:
+// Max variability still is ~10^-2
 void test_variability(unsigned long nb_points)
 {
     FloatKind greatest_difference{0};
@@ -95,5 +111,7 @@ void test_variability(unsigned long nb_points)
 int main(int argc, char *argv[])
 {
     unsigned long nb_points = std::stoull(argv[1]);
-    test_variability(nb_points);
+    // test_pi_computation(nb_points);
+    // test_execution_time(nb_points);
+    // test_variability(nb_points);
 };
